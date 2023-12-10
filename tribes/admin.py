@@ -99,7 +99,7 @@ class BytecodeInput(BaseModel):
 @adminrouter.advance(
     header=ABIFunctionSelectorHeader(
         function='set_bytecode',
-        argument_types=['address']
+        argument_types=['bytes']
     )
 )
 def set_bytecode(rollup: Rollup, data: RollupData):
@@ -111,4 +111,22 @@ def set_bytecode(rollup: Rollup, data: RollupData):
     payload_bytes = data.bytes_payload()[4:]
     payload: BytecodeInput = abi.decode_to_model(payload_bytes, BytecodeInput)
     tribe_factory._set_bytecode(payload.bytecode)
+    return True
+
+
+@adminrouter.advance(
+    header=ABIFunctionSelectorHeader(
+        function='set_proxy_addr',
+        argument_types=['address']
+    )
+)
+def set_proxy_addr(rollup: Rollup, data: RollupData):
+    # Check if caller is an admin
+    if not _is_admin(data.metadata.msg_sender):
+        # Fail advance
+        return False
+    # Get payload without header
+    payload_bytes = data.bytes_payload()[4:]
+    payload = abi.decode_to_model(payload_bytes, AddressInput)
+    tribe_factory._set_proxy_addr(payload.addr)
     return True

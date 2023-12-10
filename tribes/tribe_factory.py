@@ -2,6 +2,7 @@
 Code for the Tribe Contract generator
 """
 
+PROXY_ADDR = ''
 CONTRACT_BYTECODE = ''
 
 
@@ -15,6 +16,18 @@ def _set_bytecode(bytecode: bytes):
     """
     global CONTRACT_BYTECODE
     CONTRACT_BYTECODE = bytecode
+
+
+def _set_proxy_addr(addr: str):
+    """Set the current proxy address for deploying new contracts
+
+    Parameters
+    ----------
+    addr : str
+        New address for proxy contract
+    """
+    global PROXY_ADDR
+    PROXY_ADDR = addr
 
 
 def get_tribe_bytecode() -> bytes:
